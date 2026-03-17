@@ -95,13 +95,11 @@ export async function getTotals(sessionId) {
 
 }
 
-
 /*
 ================================
 ROUND APIs
 ================================
 */
-
 
 // ADD ROUND
 export async function addRound(payload) {
