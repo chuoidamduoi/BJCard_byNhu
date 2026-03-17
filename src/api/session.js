@@ -1,4 +1,4 @@
-const API = "https://script.google.com/macros/s/AKfycbwSszn61XPh9zJjwJ8fZET9ZJffJrj-slM1zVsgBv4CleeCSvOO5-b67fgYsbH4uwdI/exec"
+const API = "https://script.google.com/macros/s/AKfycbzbQX2jZVQj-IOhT3zQjyPEwItaQRlkRfr5WydV3C6EpR_8LySzHQurC0BIkudndhyw/exec"
 
 
 /*
@@ -16,7 +16,8 @@ async function request(url, options = {}) {
     const data = await res.json()
 
     if (!data.success) {
-        throw new Error(data.error || "API Error")
+        // throw new Error(data.error || "API Error")
+        return data
     }
 
     return data
@@ -49,30 +50,32 @@ export async function getSession(sessionId) {
         { method: "GET" }
     )
 
-    const data = res.data
+    if (res.success) {
+        const data = res.data
 
-    // convert rounds từ sheet array -> object
-    if (data.rounds) {
+        // convert rounds từ sheet array -> object
+        if (data.rounds) {
 
-        data.rounds = data.rounds.map(r => {
+            data.rounds = data.rounds.map(r => {
 
-            const roundNo = r[0]
-            const dealer = r[1]
+                const roundNo = r[0]
+                const dealer = r[1]
 
-            const scores = {}
+                const scores = {}
 
-            data.players.forEach((p, i) => {
-                scores[p] = r[i + 2] ?? 0
+                data.players.forEach((p, i) => {
+                    scores[p] = r[i + 2] ?? 0
+                })
+
+                return {
+                    round: roundNo,
+                    dealer: dealer,
+                    scores: scores
+                }
+
             })
 
-            return {
-                round: roundNo,
-                dealer: dealer,
-                scores: scores
-            }
-
-        })
-
+        }
     }
 
     return res
